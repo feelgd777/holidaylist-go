@@ -2,7 +2,7 @@ package main
 
 import (
     "fmt"
-    "github.com/feelgd777/holidaylist-go" // Import your API package
+    "github.com/feelgd777/holidaylist-go/my-api" // Import your API package
 )
 
 func main() {
