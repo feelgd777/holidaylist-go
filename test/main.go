@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-    api := holidaylist.NewAPI("21deeb8a-183d-444c-bba3-9f853b81ad86") // Initialize API with your key
+    api := my-api.NewAPI("21deeb8a-183d-444c-bba3-9f853b81ad86") // Initialize API with your key
 
     holidays := api.GetHolidays(map[string]interface{}{
         "country": "US",
