@@ -1,15 +1,28 @@
 package holidaylist
 
+import (
+    "bytes"
+    "encoding/json"
+    "net/http"
+)
+
+
 // GetHolidays is the function for fetching holiday data
 func (a *API) GetHolidays(params map[string]interface{}) Response {
-    // Define the holidays endpoint
-    endpoint := "https://back.holidaylist.io/api/v1/holidays"
+    // Make API request here
+    jsonData, _ := json.Marshal(params)
 
-    // Fetch the holidays using the core request logic
-    response, err := a.getRequest(endpoint, params)
+    resp, err := http.Get(endpoint) // Use GET
     if err != nil {
-        return Response{} // If there's an error, return an empty response
+        log.Println("Error:", err) // Log the error instead of returning it
+        return Response{} // Return an empty response on error
     }
+    defer resp.Body.Close()
 
-    return response, nil
+    // Parse the response
+    var response Response
+    json.NewDecoder(resp.Body).Decode(&response)
+
+    response.Status = resp.StatusCode
+    return response
 }
