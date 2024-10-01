@@ -16,17 +16,27 @@ func NewAPI(apiKey string) *API {
     return &API{apiKey: apiKey}
 }
 
-// GetHolidays fetches holiday data based on the provided parameters
-func (a *API) GetHolidays(country string, year int) (Response, error) {
-    // Construct the endpoint
-    endpoint := "https://back.holidaylist.io/api/v1/holidays"
+func (a *API) getRequest(endpoint string, params map[string]interface{}) (Response, error) {
+    // Convert parameters to JSON
+    jsonData, _ := json.Marshal(params)
 
-    // Prepare parameters as JSON
-    params := map[string]interface{}{
-        "country": country,
-        "year":    year,
-        "key":     a.apiKey, // Include the API key
+    // Make the API request
+    resp, err := http.Post(endpoint, "application/json", bytes.NewBuffer(jsonData))
+    if err != nil {
+        return Response{}, err
     }
+    defer resp.Body.Close()
+
+    var response Response
+    json.NewDecoder(resp.Body).Decode(&response)
+
+    // Include HTTP status in the response object
+    response.Status = resp.StatusCode
+
+    return response, nil
+}
+
+// GetHolidays fetches holiday data based on the provided parameters
 
     jsonData, _ := json.Marshal(params)
 

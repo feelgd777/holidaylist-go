@@ -11,5 +11,5 @@ func (a *API) GetHolidays(params map[string]interface{}) Response {
         return Response{} // If there's an error, return an empty response
     }
 
-    return response
+    return response, nil
 }
