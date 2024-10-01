@@ -1,52 +1,45 @@
 package myapi
 
 import (
+    "bytes"
     "encoding/json"
-    "fmt"
     "net/http"
-    "net/url"
-    "io/ioutil"
 )
 
+// API holds the user's API key
 type API struct {
     apiKey string
 }
 
+// NewAPI initializes the API with the provided key
 func NewAPI(apiKey string) *API {
     return &API{apiKey: apiKey}
 }
 
-func (a *API) GetHolidays(params map[string]interface{}) (Response, error) {
-    baseURL := "https://back.holidaylist.io/api/v1/holidays"
+// getRequest sends a GET request to the API with parameters
+func (a *API) getRequest(endpoint string, params map[string]interface{}) (Response, error) {
+    jsonData, _ := json.Marshal(params)
 
-    // Prepare query parameters
-    reqURL, _ := url.Parse(baseURL)
-    query := reqURL.Query()
-    query.Add("key", a.apiKey)
-
-    for k, v := range params {
-        query.Add(k, fmt.Sprintf("%v", v))
+    req, err := http.NewRequest("GET", endpoint, bytes.NewBuffer(jsonData))
+    if err != nil {
+        return Response{}, err
     }
-    reqURL.RawQuery = query.Encode()
+    req.Header.Set("Content-Type", "application/json")
+    req.Header.Set("Authorization", "Bearer "+a.apiKey)
 
-    // Make the GET request
-    resp, err := http.Get(reqURL.String())
+    client := &http.Client{}
+    resp, err := client.Do(req)
     if err != nil {
         return Response{}, err
     }
     defer resp.Body.Close()
 
-    // Read and parse response body
-    body, err := ioutil.ReadAll(resp.Body)
-    if err != nil {
-        return Response{}, err
-    }
-
     var response Response
-    json.Unmarshal(body, &response)
+    json.NewDecoder(resp.Body).Decode(&response)
 
     // Include HTTP status in the response object
     response.Status = resp.StatusCode
 
     return response, nil
 }
+

@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-    api := myapi.NewAPI("21deeb8a-183d-444c-bba3-9f853b81ad86") // Initialize API with your key
+    api := myapi.NewAPI("21deeb8a-183d-444c-bba3-9f853b81ad86")
 
     holidays, err := api.GetHolidays(map[string]interface{}{
         "country": "US",
@@ -18,5 +18,6 @@ func main() {
         return
     }
 
-    fmt.Printf("Response: %+v\n", holidays)
+    fmt.Println(holidays)
 }
+

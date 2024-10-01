@@ -1,11 +1,7 @@
 package myapi
 
-// GetHolidays fetches holiday data
-func (a *API) GetHolidays(params map[string]interface{}) Response {
+// GetHolidays fetches holiday data using the holidays endpoint
+func (a *API) GetHolidays(params map[string]interface{}) (Response, error) {
     endpoint := "https://back.holidaylist.io/api/v1/holidays"
-    response, err := a.getRequest(endpoint, params)
-    if err != nil {
-        return Response{}
-    }
-    return response
+    return a.getRequest(endpoint, params)
 }
