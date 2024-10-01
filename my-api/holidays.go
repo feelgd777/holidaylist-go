@@ -4,16 +4,16 @@ import (
     "encoding/json"
     "net/http"
     "log"
+    "fmt"
+    "strconv"
 )
 
-// GetHolidays fetches holiday data based on the provided parameters
-// GetHolidays fetches holiday data based on the provided parameters
 func (a *API) GetHolidays(params map[string]interface{}) (Response, error) {
     // Construct the endpoint
     endpoint := "https://back.holidaylist.io/api/v1/holidays"
 
     // Prepare URL parameters for GET request with optional parameters
-    reqURL := endpoint + "?country=" + params["country"].(string) + "&year=" + params["year"].(string)
+    reqURL := endpoint + "?country=" + params["country"].(string) + "&year=" + strconv.Itoa(params["year"].(int))
 
     // Check for optional parameters and append them to the request URL if they exist
     if val, ok := params["month"]; ok {
@@ -50,4 +50,3 @@ func (a *API) GetHolidays(params map[string]interface{}) (Response, error) {
 
     return response, nil
 }
-
