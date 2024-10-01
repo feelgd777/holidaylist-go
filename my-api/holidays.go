@@ -1,4 +1,4 @@
-package main
+package holidaylist
 
 // GetHolidays is the function for fetching holiday data
 func (a *API) GetHolidays(params map[string]interface{}) Response {
