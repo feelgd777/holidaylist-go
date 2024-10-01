@@ -1,44 +1,49 @@
 package myapi
 
 import (
-    "bytes"
     "encoding/json"
     "fmt"
-    "io/ioutil"
     "net/http"
+    "net/url"
+    "io/ioutil"
 )
 
-// API holds the user's API key
 type API struct {
     apiKey string
 }
 
-// NewAPI initializes the API with the provided key
 func NewAPI(apiKey string) *API {
     return &API{apiKey: apiKey}
 }
 
-// getRequest sends a request to the API with parameters
-func (a *API) getRequest(endpoint string, params map[string]interface{}) (Response, error) {
-    jsonData, _ := json.Marshal(params)
+func (a *API) GetHolidays(params map[string]interface{}) (Response, error) {
+    baseURL := "https://back.holidaylist.io/api/v1/holidays"
 
-    // Debugging: Print the JSON data
-    fmt.Println("Sending JSON Data: ", string(jsonData))
+    // Prepare query parameters
+    reqURL, _ := url.Parse(baseURL)
+    query := reqURL.Query()
+    query.Add("key", a.apiKey)
 
-    // Make the API request
-    resp, err := http.Post(endpoint, "application/json", bytes.NewBuffer(jsonData))
+    for k, v := range params {
+        query.Add(k, fmt.Sprintf("%v", v))
+    }
+    reqURL.RawQuery = query.Encode()
+
+    // Make the GET request
+    resp, err := http.Get(reqURL.String())
     if err != nil {
         return Response{}, err
     }
     defer resp.Body.Close()
 
-    // Debugging: Print response status and body
-    fmt.Println("Response Status:", resp.StatusCode)
-    body, _ := ioutil.ReadAll(resp.Body)
-    fmt.Println("Response Body:", string(body))
+    // Read and parse response body
+    body, err := ioutil.ReadAll(resp.Body)
+    if err != nil {
+        return Response{}, err
+    }
 
     var response Response
-    json.NewDecoder(bytes.NewBuffer(body)).Decode(&response)
+    json.Unmarshal(body, &response)
 
     // Include HTTP status in the response object
     response.Status = resp.StatusCode
