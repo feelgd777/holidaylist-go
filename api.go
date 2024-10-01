@@ -1,4 +1,4 @@
-package myapi
+package holidaylist
 
 // API holds the user's API key
 type API struct {

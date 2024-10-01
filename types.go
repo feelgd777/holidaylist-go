@@ -1,4 +1,4 @@
-package myapi
+package holidaylist
 
 // Response struct for parsing the holiday data and status
 type Response struct {

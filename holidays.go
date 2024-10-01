@@ -1,4 +1,4 @@
-package myapi
+package holidaylist
 
 import (
     "encoding/json"
