@@ -1,28 +1,37 @@
-package holidaylist
+package myapi
 
 import (
-    "bytes"
     "encoding/json"
     "net/http"
+    "log"
 )
 
-
-// GetHolidays is the function for fetching holiday data
+// GetHolidays fetches holiday data based on the provided parameters
 func (a *API) GetHolidays(params map[string]interface{}) Response {
-    // Make API request here
-    jsonData, _ := json.Marshal(params)
+    // Construct the endpoint
+    endpoint := "https://back.holidaylist.io/api/v1/holidays"
 
-    resp, err := http.Get(endpoint) // Use GET
+    // Prepare the URL parameters for GET request
+    reqURL := endpoint + "?country=" + params["country"].(string) + "&year=" + params["year"].(string) + "&key=" + a.apiKey
+
+    // Make the API request
+    resp, err := http.Get(reqURL)
     if err != nil {
-        log.Println("Error:", err) // Log the error instead of returning it
-        return Response{} // Return an empty response on error
+        log.Println("Error:", err)
+        return Response{}
     }
     defer resp.Body.Close()
 
     // Parse the response
     var response Response
-    json.NewDecoder(resp.Body).Decode(&response)
+    err = json.NewDecoder(resp.Body).Decode(&response)
+    if err != nil {
+        log.Println("Error decoding response:", err)
+        return Response{}
+    }
 
+    // Include HTTP status in the response object
     response.Status = resp.StatusCode
+
     return response
 }
