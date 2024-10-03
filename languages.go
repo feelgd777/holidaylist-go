@@ -2,7 +2,7 @@ package holidaylist
 
 import (
     "encoding/json"
-    "log"
+    "fmt"
     "net/http"
     "net/url"
 )
@@ -18,7 +18,7 @@ func (a *API) GetLanguages(params map[string]interface{}) (LanguageResponse, err
     
     // Loop through the passed parameters and add them to the query string
     for key, value := range params {
-        query.Add(key, value.(string))
+        query.Add(key, fmt.Sprintf("%v", value))  // Safe conversion to string
     }
     
     reqURL.RawQuery = query.Encode()
@@ -26,8 +26,7 @@ func (a *API) GetLanguages(params map[string]interface{}) (LanguageResponse, err
     // Make the request
     resp, err := http.Get(reqURL.String())
     if err != nil {
-        log.Println("Error making request:", err)
-        return LanguageResponse{}, err
+        return LanguageResponse{}, fmt.Errorf("error making request: %v", err)
     }
     defer resp.Body.Close()
 
@@ -35,8 +34,7 @@ func (a *API) GetLanguages(params map[string]interface{}) (LanguageResponse, err
     var response LanguageResponse
     err = json.NewDecoder(resp.Body).Decode(&response)
     if err != nil {
-        log.Println("Error decoding response:", err)
-        return LanguageResponse{}, err
+        return LanguageResponse{}, fmt.Errorf("error decoding response: %v", err)
     }
 
     return response, nil
