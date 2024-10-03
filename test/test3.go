@@ -10,4 +10,5 @@ func main() {
         "country": "US",
         "year":    2023,
     })
+    fmt.Println(holidays)
 }
