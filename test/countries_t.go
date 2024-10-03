@@ -10,7 +10,7 @@ func main() {
     api := holidaylist.NewAPI("21deeb8a-183d-444c-bba3-9f853b81ad86") // Replace with your actual API key
 
     // Fetch the countries
-    countriesResponse, err := api.GetCountries()
+    countriesResponse, err := api.GetCountries(map[string]interface{}{})
 
     // Check if there was an error
     if err != nil {

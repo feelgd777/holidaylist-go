@@ -39,5 +39,10 @@ func (a *API) GetCountries(params map[string]interface{}) (CountryResponse, erro
         return CountryResponse{}, fmt.Errorf("error decoding response: %v", err)
     }
 
+    // Return error if no countries are found
+    if len(response.Data) == 0 {
+        return CountryResponse{}, fmt.Errorf("no countries found")
+    }
+
     return response, nil
 }
