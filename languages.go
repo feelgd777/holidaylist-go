@@ -2,12 +2,12 @@ package holidaylist
 
 import (
     "encoding/json"
-    "log"
+    "fmt"
     "net/http"
     "net/url"
 )
 
-// GetLanguages fetches the list of languages, allowing optional parameters to be passed as a JSON object
+// GetLanguages fetches the list of languages, allowing optional parameters to be passed
 func (a *API) GetLanguages(params map[string]interface{}) (LanguageResponse, error) {
     endpoint := "https://back.holidaylist.io/api/v1/languages"
     
@@ -16,9 +16,11 @@ func (a *API) GetLanguages(params map[string]interface{}) (LanguageResponse, err
     query := reqURL.Query()
     query.Add("key", a.apiKey)
     
-    // Loop through the passed parameters and add them to the query string
-    for key, value := range params {
-        query.Add(key, value.(string))
+    // Handle nil or optional parameters
+    if params != nil {
+        for key, value := range params {
+            query.Add(key, fmt.Sprintf("%v", value)) // Convert any type to string
+        }
     }
     
     reqURL.RawQuery = query.Encode()
@@ -26,8 +28,7 @@ func (a *API) GetLanguages(params map[string]interface{}) (LanguageResponse, err
     // Make the request
     resp, err := http.Get(reqURL.String())
     if err != nil {
-        log.Println("Error making request:", err)
-        return LanguageResponse{}, err
+        return LanguageResponse{}, fmt.Errorf("error making request: %v", err)
     }
     defer resp.Body.Close()
 
@@ -35,8 +36,7 @@ func (a *API) GetLanguages(params map[string]interface{}) (LanguageResponse, err
     var response LanguageResponse
     err = json.NewDecoder(resp.Body).Decode(&response)
     if err != nil {
-        log.Println("Error decoding response:", err)
-        return LanguageResponse{}, err
+        return LanguageResponse{}, fmt.Errorf("error decoding response: %v", err)
     }
 
     return response, nil
