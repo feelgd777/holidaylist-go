@@ -6,22 +6,18 @@ import (
 )
 
 func main() {
-    // Initialize API with your key
-    api := holidaylist.NewAPI("21deeb8a-183d-444c-bba3-9f853b81ad86")
+    api := holidaylist.NewAPI("YOUR_API_KEY")
 
-    // Fetch holidays
-    holidays, err := api.GetHolidays(map[string]interface{}{
-        "country": "US",
-        "year":    2023,
-        // Optional parameters can be added here
+    // Fetch countries with the optional parameter
+    countries, err := api.GetCountries(map[string]interface{}{
+        "language": "es",  // Optional parameter: fetch countries in Spanish
     })
 
-    // Handle error
     if err != nil {
-        fmt.Println("Error:", err)
+        fmt.Println("Error fetching countries:", err)
         return
     }
 
-    // **USE the holidays variable by printing it**
-    fmt.Println("Holidays Response:", holidays)
+    // Print the first country name
+    fmt.Println("First country:", countries.Data[0].Name)
 }
