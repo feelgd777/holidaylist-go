@@ -7,8 +7,8 @@ import (
     "net/url"
 )
 
-// GetCountries fetches the list of countries, allowing optional parameters to be passed
-func (a *API) GetCountries(params map[string]interface{}) (CountryResponse, error) {
+// GetCountries fetches the list of countries. Optional parameters can be passed.
+func (a *API) GetCountries(params ...map[string]interface{}) (CountryResponse, error) {
     endpoint := "https://back.holidaylist.io/api/v1/countries"
     
     // Build the query parameters from the passed JSON object
@@ -16,13 +16,13 @@ func (a *API) GetCountries(params map[string]interface{}) (CountryResponse, erro
     query := reqURL.Query()
     query.Add("key", a.apiKey)
     
-    // Handle nil or optional parameters
-    if params != nil {
-        for key, value := range params {
-            query.Add(key, fmt.Sprintf("%v", value)) // Convert any type to string
+    // Handle the case when no parameters are passed
+    if len(params) > 0 && params[0] != nil {
+        for key, value := range params[0] {
+            query.Add(key, fmt.Sprintf("%v", value))  // Convert any type to string
         }
     }
-    
+
     reqURL.RawQuery = query.Encode()
     
     // Make the request
@@ -39,7 +39,7 @@ func (a *API) GetCountries(params map[string]interface{}) (CountryResponse, erro
         return CountryResponse{}, fmt.Errorf("error decoding response: %v", err)
     }
 
-    // Return error if no countries are found
+    // Check if no countries were found
     if len(response.Data) == 0 {
         return CountryResponse{}, fmt.Errorf("no countries found")
     }
