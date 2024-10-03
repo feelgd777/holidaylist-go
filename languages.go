@@ -7,8 +7,8 @@ import (
     "net/url"
 )
 
-// GetLanguages fetches the list of languages, allowing optional parameters to be passed
-func (a *API) GetLanguages(params map[string]interface{}) (LanguageResponse, error) {
+// GetLanguages fetches the list of languages. Optional parameters can be passed.
+func (a *API) GetLanguages(params ...map[string]interface{}) (LanguageResponse, error) {
     endpoint := "https://back.holidaylist.io/api/v1/languages"
     
     // Build the query parameters from the passed JSON object
@@ -16,9 +16,9 @@ func (a *API) GetLanguages(params map[string]interface{}) (LanguageResponse, err
     query := reqURL.Query()
     query.Add("key", a.apiKey)
     
-    // Handle nil or optional parameters
-    if params != nil {
-        for key, value := range params {
+    // Handle the case when no parameters are passed
+    if len(params) > 0 && params[0] != nil {
+        for key, value := range params[0] {
             query.Add(key, fmt.Sprintf("%v", value)) // Convert any type to string
         }
     }

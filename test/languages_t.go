@@ -10,7 +10,7 @@ func main() {
     api := holidaylist.NewAPI("21deeb8a-183d-444c-bba3-9f853b81ad86") // Replace with your actual API key
 
     // Fetch the languages
-    languagesResponse, err := api.GetLanguages(map[string]interface{}{})
+    languagesResponse, err := api.GetLanguages()
 
     // Check if there was an error
     if err != nil {
