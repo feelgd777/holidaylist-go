@@ -2,6 +2,7 @@ package main
 
 import (
     "github.com/feelgd777/holidaylist-go"
+    "fmt"
 )
 
 func main() {
